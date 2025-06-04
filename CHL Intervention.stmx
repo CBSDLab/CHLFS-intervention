@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
+	<header>
+		<smile version="1.0" namespace="std, isee" uses_arrays="4"/>
+		<name>CHL intervention v3</name>
+		<uuid>0ab5b581-7057-4f99-9dc9-71f9c76e17c1</uuid>
+		<vendor>isee systems, inc.</vendor>
+		<product version="3.3" isee:build_number="2953" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+	</header>
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="Euler" time_units="Years" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
+		<start>2013</start>
+		<stop>2019</stop>
+		<dt reciprocal="true">64</dt>
+	</sim_specs>
+	<dimensions>
+		<dim name="Age_Group">
+			<elem name="Two_to_Five"/>
+			<elem name="Six_to_Eight"/>
+		</dim>
+		<dim name="Gender">
+			<elem name="Boys"/>
+			<elem name="Girls"/>
+		</dim>
+		<dim name="Group">
+			<elem name="Intervention"/>
+			<elem name="Control"/>
+		</dim>
+		<dim name="Jurisdiction">
+			<elem name="Alaska"/>
+			<elem name="American_Samoa"/>
+			<elem name="CNMI"/>
+			<elem name="Guam"/>
+			<elem name="Hawai'i"/>
+		</dim>
+	</dimensions>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true"/>
+	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
+	<isee:time_formats default_format="TimeLabel1">
+		<isee:time_format name="Builtin" type="adaptive"/>
+		<isee:time_format name="TimeLabel1" precision="1" scale_by="1" type="number"/>
+	</isee:time_formats>
+	<default_format/>
+	<data>
+		<export enabled="false" resource="r../results.csv" interval="DT" precomputed="false" isee:format="numbers">
+			<all/>
+		</export>
+		<import enabled="false" isee:overwrite="false" resource="r../init.csv"/>
+		<import enabled="false" isee:overwrite="false" resource="r../parms.csv"/>
+		<import enabled="false" isee:overwrite="false" resource="r../refmode.csv"/>
+		<import enabled="false" isee:overwrite="false" orientation="horizontal" resource="r../parms horizontal.xlsx" type="Excel" worksheet="parms horizontal"/>
+	</data>
+	<model_units>
+		<unit name="Dimensionless">
+			<eqn>1</eqn>
+			<alias>dmnl</alias>
+			<alias>unitless</alias>
+			<alias>fraction</alias>
+		</unit>
+		<unit name="People">
+			<eqn/>
+			<alias>person</alias>
+			<alias>persons</alias>
+		</unit>
+		<unit name="Years">
+			<eqn/>
+			<alias>yr</alias>
+			<alias>year</alias>
+		</unit>
+	</model_units>
+	<model>
+		<variables>
+			<flow name="Net Change in\nChildren">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>Children_Under_or_Normal_Weight*Hazard_Rate[Group]</eqn>
+				<units>People/Years</units>
+			</flow>
+			<flow name="Aging Into 2\nYear Olds 1">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>INIT(Aging_Out_of_8_Year_Olds_1)</eqn>
+				<non_negative/>
+				<units>People/Years</units>
+			</flow>
+			<stock name="Children\nOverweight or\nObese">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>Initial_Number_of_Children*
+Initial_Prevalence_of_Overweight_or_Obesity</eqn>
+				<inflow>Net_Change_in_Children</inflow>
+				<inflow>Aging_Into_2_Year_Olds_2</inflow>
+				<outflow>Aging_Out_of_8_Year_Olds_2</outflow>
+				<units>People</units>
+			</stock>
+			<stock name="Children Under or\nNormal Weight">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>Initial_Number_of_Children*
+(1-Initial_Prevalence_of_Overweight_or_Obesity)</eqn>
+				<inflow>Aging_Into_2_Year_Olds_1</inflow>
+				<outflow>Net_Change_in_Children</outflow>
+				<outflow>Aging_Out_of_8_Year_Olds_1</outflow>
+				<units>People</units>
+			</stock>
+			<flow name="Aging Into 2\nYear Olds 2">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>INIT(Aging_Out_of_8_Year_Olds_2)</eqn>
+				<non_negative/>
+				<units>People/Years</units>
+			</flow>
+			<flow name="Aging Out of\n8 Year Olds 1">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>Children_Under_or_Normal_Weight/
+Time_in_Age_Group</eqn>
+				<non_negative/>
+				<units>People/Years</units>
+			</flow>
+			<flow name="Aging Out of\n8 Year Olds 2">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>Children_Overweight_or_Obese/
+Time_in_Age_Group</eqn>
+				<non_negative/>
+				<units>People/Years</units>
+			</flow>
+			<aux name="Initial Number of\nChildren">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>1000</eqn>
+				<units>People</units>
+			</aux>
+			<aux name="Initial Prevalence of\nOverweight or Obesity">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>.318</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="Time in Age\nGroup">
+				<eqn>4</eqn>
+				<units>Years</units>
+			</aux>
+			<aux name="Hazard\nRate">
+				<dimensions>
+					<dim name="Group"/>
+				</dimensions>
+				<eqn>IF Group=1 THEN 
+  Base_Hazard_Rate*CHL_Intervention*CHL_Maintenance
+ELSE
+  Base_Hazard_Rate</eqn>
+				<units>1/Years</units>
+			</aux>
+			<aux name="Base\nHazard Rate">
+				<eqn>0.0148</eqn>
+				<units>1/Years</units>
+			</aux>
+			<group name="Population" run="false">
+				<entity name="Initial_Prevalence_of_Overweight_or_Obesity"/>
+				<entity name="Initial_Number_of_Children"/>
+				<entity name="Base_Hazard_Rate"/>
+				<entity name="Aging_Out_of_8_Year_Olds_2"/>
+				<entity name="Children_Under_or_Normal_Weight"/>
+				<entity name="Time_in_Age_Group"/>
+				<entity name="Hazard_Rate"/>
+				<entity name="Aging_Into_2_Year_Olds_1"/>
+				<entity name="Aging_Into_2_Year_Olds_2"/>
+				<entity name="Children_Overweight_or_Obese"/>
+				<entity name="Aging_Out_of_8_Year_Olds_1"/>
+				<entity name="Net_Change_in_Children"/>
+			</group>
+			<group name="Measures" run="false">
+				<entity name="Total_Children"/>
+				<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+				<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children"/>
+			</group>
+			<aux name="Total Children">
+				<dimensions>
+					<dim name="Age_Group"/>
+					<dim name="Gender"/>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>Children_Under_or_Normal_Weight+Children_Overweight_or_Obese</eqn>
+				<units>People</units>
+			</aux>
+			<aux name="Prevalence of\nOverweight or\nObese Children">
+				<dimensions>
+					<dim name="Group"/>
+					<dim name="Jurisdiction"/>
+				</dimensions>
+				<eqn>SUM(Children_Overweight_or_Obese[*,*,Group,Jurisdiction])/
+SUM(Total_Children[*,*,Group,Jurisdiction])</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="Reference Mode Prevalence of\nOverweight or Obese Children">
+				<dimensions>
+					<dim name="Group"/>
+				</dimensions>
+				<element subscript="Intervention">
+					<gf>
+						<xscale min="2013" max="2019"/>
+						<yscale min="0.25" max="0.5"/>
+						<ypts>0.318,0.3072,0.298,0.2912,0.2851,0.2811,0.276</ypts>
+					</gf>
+				</element>
+				<element subscript="Control">
+					<gf>
+						<xscale min="2013" max="2019"/>
+						<yscale min="0.25" max="0.4"/>
+						<ypts>0.318,0.3205,0.325,0.3416,0.3596,0.3759,0.391</ypts>
+					</gf>
+				</element>
+				<eqn>TIME</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Intervention\nES">
+				<eqn>1</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Maintenance">
+				<eqn>1+STEP(CHL_Maintenance_ES, CHL_Intervention_T2) -
+STEP(CHL_Maintenance_ES, CHL_Intervention_T2+CHL_Maintenance_Duration)</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Intervention T1">
+				<eqn>2013</eqn>
+				<units>Year</units>
+			</aux>
+			<group name="Intervention" run="false">
+				<entity name="CHL_Intervention_ES"/>
+				<entity name="CHL_Intervention"/>
+				<entity name="CHL_Intervention_T1"/>
+				<entity name="CHL_Intervention_Duration"/>
+				<entity name="CHL_Maintenance_ES"/>
+				<entity name="CHL_Maintenance_Duration"/>
+				<entity name="CHL_Intervention_T2"/>
+				<entity name="CHL_Maintenance"/>
+			</group>
+			<aux name="CHL\nIntervention">
+				<eqn>1 +STEP(CHL_Intervention_ES, CHL_Intervention_T1) -
+STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Intervention Duration">
+				<eqn>2</eqn>
+				<units>Years</units>
+			</aux>
+			<aux name="CHL Maintenance\nES">
+				<eqn>1</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Maintenance Duration">
+				<eqn>2</eqn>
+				<units>Years</units>
+			</aux>
+			<aux name="CHL Intervention T2">
+				<eqn>CHL_Intervention_T1+CHL_Intervention_Duration</eqn>
+				<units>Years</units>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="11" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="true" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="118" isee:scroll_y="23" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<flow x="359.5" y="261.143" name="Net Change in\nChildren">
+					<pts>
+						<pt x="295.5" y="261.143"/>
+						<pt x="423.5" y="261.143"/>
+					</pts>
+				</flow>
+				<flow label_side="top" x="207.75" y="261.143" name="Aging Into 2\nYear Olds 1">
+					<pts>
+						<pt x="165" y="261.143"/>
+						<pt x="250.5" y="261.143"/>
+					</pts>
+				</flow>
+				<stock x="423.5" y="243.643" width="45" height="35" name="Children\nOverweight or\nObese"/>
+				<stock x="250.5" y="243.643" width="45" height="35" name="Children Under or\nNormal Weight"/>
+				<flow label_side="top" x="517.25" y="261.143" name="Aging Into 2\nYear Olds 2">
+					<pts>
+						<pt x="566" y="261.143"/>
+						<pt x="468.5" y="261.143"/>
+					</pts>
+				</flow>
+				<flow label_side="left" x="274" y="318.893" name="Aging Out of\n8 Year Olds 1">
+					<pts>
+						<pt x="274" y="278.643"/>
+						<pt x="274" y="380.143"/>
+					</pts>
+				</flow>
+				<flow label_side="right" x="446" y="319.893" name="Aging Out of\n8 Year Olds 2">
+					<pts>
+						<pt x="446" y="278.643"/>
+						<pt x="446" y="382.143"/>
+					</pts>
+				</flow>
+				<aux x="85" y="490.143" name="Initial Number of\nChildren"/>
+				<aux x="182" y="490.143" name="Initial Prevalence of\nOverweight or Obesity"/>
+				<connector uid="1" angle="38.211">
+					<from>Children_Under_or_Normal_Weight</from>
+					<to>Net_Change_in_Children</to>
+				</connector>
+				<connector uid="3" angle="299.604">
+					<from>Children_Under_or_Normal_Weight</from>
+					<to>Aging_Out_of_8_Year_Olds_1</to>
+				</connector>
+				<connector uid="4" angle="241.858">
+					<from>Children_Overweight_or_Obese</from>
+					<to>Aging_Out_of_8_Year_Olds_2</to>
+				</connector>
+				<aux x="359.5" y="367.143" name="Time in Age\nGroup"/>
+				<connector uid="5" angle="150.563">
+					<from>Time_in_Age_Group</from>
+					<to>Aging_Out_of_8_Year_Olds_1</to>
+				</connector>
+				<connector uid="6" angle="28.6453">
+					<from>Time_in_Age_Group</from>
+					<to>Aging_Out_of_8_Year_Olds_2</to>
+				</connector>
+				<aux label_side="top" x="359.5" y="190" name="Hazard\nRate"/>
+				<connector uid="7" angle="272.028">
+					<from>Hazard_Rate</from>
+					<to>Net_Change_in_Children</to>
+				</connector>
+				<aux label_side="top" x="403.571" y="144.286" name="Base\nHazard Rate"/>
+				<connector uid="8" angle="229.304">
+					<from>Base_Hazard_Rate</from>
+					<to>Hazard_Rate</to>
+				</connector>
+				<group locked="true" x="22.86" y="37.4286" width="732" height="516" name="Population">
+					<item uid="32"/>
+					<item uid="31"/>
+				</group>
+				<group locked="false" x="783.571" y="37.4286" width="732" height="516" name="Measures">
+					<item uid="10"/>
+					<item uid="11"/>
+					<item uid="16"/>
+					<item uid="19"/>
+					<item uid="20"/>
+					<item uid="35"/>
+					<item uid="36"/>
+					<item uid="37"/>
+					<item uid="38"/>
+				</group>
+				<aux label_side="right" x="1001.43" y="132.929" name="Total Children"/>
+				<connector uid="12" angle="0">
+					<from>
+						<alias uid="10"/>
+					</from>
+					<to>Total_Children</to>
+				</connector>
+				<connector uid="13" angle="42.3553">
+					<from>
+						<alias uid="11"/>
+					</from>
+					<to>Total_Children</to>
+				</connector>
+				<aux x="1001.43" y="244.286" name="Prevalence of\nOverweight or\nObese Children"/>
+				<connector uid="14" angle="270">
+					<from>Total_Children</from>
+					<to>Prevalence_of_Overweight_or_Obese_Children</to>
+				</connector>
+				<connector uid="15" angle="0">
+					<from>
+						<alias uid="11"/>
+					</from>
+					<to>Prevalence_of_Overweight_or_Obese_Children</to>
+				</connector>
+				<stacked_container uid="16" x="1116.86" y="82.1429" width="371" height="319.571">
+					<graph width="371" height="319.571" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" pen_style="dotted" title="Intervention Reference Mode" isee:keep_zero_visible="false" pen_width="2" index="0" show_y_axis="true">
+							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Intervention]"/>
+							<scale min="0.25" max="0.4"/>
+						</plot>
+						<plot color="red" pen_style="dotted" title="Control Reference Mode" isee:keep_zero_visible="true" pen_width="2" index="1" show_y_axis="true">
+							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Control]"/>
+						</plot>
+						<plot color="#0433FF" title="Intervention Simulation" isee:keep_zero_visible="true" pen_width="2" index="2" show_y_axis="true">
+							<entity name="Prevalence_of_Overweight_or_Obese_Children[Intervention, Hawai'i]"/>
+						</plot>
+						<plot color="#FF2600" title="Control Simulation" isee:keep_zero_visible="true" pen_width="2" index="3" show_y_axis="true">
+							<entity name="Prevalence_of_Overweight_or_Obese_Children[Control, Hawai'i]"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux x="910" y="467.857" name="Reference Mode Prevalence of\nOverweight or Obese Children"/>
+				<aux label_side="left" x="315.357" y="689.429" name="CHL Intervention\nES"/>
+				<aux label_side="right" x="418.357" y="838.429" name="CHL Maintenance"/>
+				<aux label_side="left" x="315.357" y="722.429" name="CHL Intervention T1"/>
+				<group locked="false" x="21.4286" y="627.429" width="732" height="523" name="Intervention"/>
+				<aux label_side="right" x="418.357" y="689.429" name="CHL\nIntervention"/>
+				<aux label_side="left" x="315.357" y="758.429" name="CHL Intervention Duration"/>
+				<connector uid="21" angle="359.082">
+					<from>CHL_Intervention_ES</from>
+					<to>CHL_Intervention</to>
+				</connector>
+				<connector uid="23" angle="2.58572">
+					<from>CHL_Intervention_Duration</from>
+					<to>CHL_Intervention_T2</to>
+				</connector>
+				<aux label_side="left" x="315.357" y="868.429" name="CHL Maintenance\nES"/>
+				<aux label_side="left" x="318.357" y="838.429" name="CHL Maintenance Duration"/>
+				<connector uid="24" angle="16.4103">
+					<from>CHL_Maintenance_ES</from>
+					<to>CHL_Maintenance</to>
+				</connector>
+				<connector uid="26" angle="0">
+					<from>CHL_Maintenance_Duration</from>
+					<to>CHL_Maintenance</to>
+				</connector>
+				<aux x="383.86" y="758.429" name="CHL Intervention T2"/>
+				<connector uid="27" angle="337.549">
+					<from>CHL_Intervention_T1</from>
+					<to>CHL_Intervention_T2</to>
+				</connector>
+				<connector uid="28" angle="57.9983">
+					<from>CHL_Intervention_T2</from>
+					<to>CHL_Intervention</to>
+				</connector>
+				<connector uid="29" angle="11.4839">
+					<from>CHL_Intervention_T1</from>
+					<to>CHL_Intervention</to>
+				</connector>
+				<connector uid="30" angle="285.675">
+					<from>CHL_Intervention_T2</from>
+					<to>CHL_Maintenance</to>
+				</connector>
+				<connector uid="33" angle="297.408">
+					<from>
+						<alias uid="31"/>
+					</from>
+					<to>Hazard_Rate</to>
+				</connector>
+				<connector uid="34" angle="340.548">
+					<from>
+						<alias uid="32"/>
+					</from>
+					<to>Hazard_Rate</to>
+				</connector>
+				<connector uid="39" angle="189.824">
+					<from>Aging_Out_of_8_Year_Olds_1</from>
+					<to>Aging_Into_2_Year_Olds_1</to>
+				</connector>
+				<connector uid="40" angle="4.43845">
+					<from>Aging_Out_of_8_Year_Olds_2</from>
+					<to>Aging_Into_2_Year_Olds_2</to>
+				</connector>
+				<alias font_style="italic" uid="10" x="856.786" y="115.429" width="45" height="35">
+					<of>Children_Under_or_Normal_Weight</of>
+				</alias>
+				<alias font_style="italic" uid="11" x="856.786" y="226.786" width="45" height="35">
+					<of>Children_Overweight_or_Obese</of>
+				</alias>
+				<alias font_style="italic" uid="19" x="1143.86" y="421.857" width="18" height="18">
+					<of>Base_Hazard_Rate</of>
+				</alias>
+				<alias font_style="italic" uid="20" x="1140.57" y="481" width="18" height="18">
+					<of>Initial_Prevalence_of_Overweight_or_Obesity</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="31" x="326" y="114" width="18" height="18">
+					<of>CHL_Intervention</of>
+				</alias>
+				<alias font_style="italic" label_side="top" uid="32" x="287" y="153.286" width="18" height="18">
+					<of>CHL_Maintenance</of>
+				</alias>
+				<alias font_style="italic" uid="35" x="1247" y="421.857" width="18" height="18">
+					<of>CHL_Intervention_ES</of>
+				</alias>
+				<alias font_style="italic" uid="36" x="1247" y="481" width="18" height="18">
+					<of>CHL_Maintenance_ES</of>
+				</alias>
+				<alias font_style="italic" uid="37" x="1353.14" y="421.857" width="18" height="18">
+					<of>CHL_Intervention_Duration</of>
+				</alias>
+				<alias font_style="italic" uid="38" x="1353.14" y="481" width="18" height="18">
+					<of>CHL_Maintenance_Duration</of>
+				</alias>
+			</view>
+		</views>
+	</model>
+</xmile>
+
