@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
+	<header>
+		<smile version="1.0" namespace="std, isee"/>
+		<name>CHL Intervention CLD v1</name>
+		<uuid>eed773d1-f4f7-4725-8d05-452b96d4f2dc</uuid>
+		<vendor>isee systems, inc.</vendor>
+		<product version="3.8" isee:build_number="3570" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+	</header>
+	<sim_specs isee:sim_duration="1.5" isee:run_prefix="Run" isee:simulation_delay="0.125" isee:restore_on_start="false" method="Euler" time_units="Months" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="true" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
+		<start>1</start>
+		<stop>13</stop>
+		<dt reciprocal="true">4</dt>
+	</sim_specs>
+	<isee:prefs saved_runs="5" keep="false" show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="cld" isee:design="Deluxe Prev-Next Blue Green Pastel" isee:design_custom="false" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" rerun_on_structure_change="false" rifp="true"/>
+	<isee:multiplayer_settings include_chat="true" allow_observers="false" advance_time_increment="1" max_advance_time_in_ms="0" model_stops_when_players_drop="false" observer_start_page="home_page" enabled="false"/>
+	<isee:time_formats default_format="Builtin">
+		<isee:time_format name="Builtin" type="adaptive"/>
+	</isee:time_formats>
+	<isee:number_format_extenders/>
+	<default_format/>
+	<model_units/>
+	<model>
+		<variables>
+			<stock name="Children\nUnder or\nNormal Weight">
+				<inflow>Transition_to_Under_or_Normal_Weight</inflow>
+				<outflow>Transition_to_Overweight_or_Obese</outflow>
+				<non_negative/>
+			</stock>
+			<stock name="Children\nOverweight or\nObese">
+				<inflow>Transition_to_Overweight_or_Obese</inflow>
+				<outflow>Transition_to_Under_or_Normal_Weight</outflow>
+				<non_negative/>
+			</stock>
+			<flow name="Transition to\nOverweight or\nObese">
+				<eqn>NAN(Children_Under_or_Normal_Weight,Risk_of_Becoming_Overweight_or_Obese)</eqn>
+				<non_negative/>
+			</flow>
+			<flow name="Transition to\nUnder or Normal\nWeight">
+				<eqn>NAN(Children_Overweight_or_Obese,Average_Time_to_Under_or_Normal_Weight)</eqn>
+				<non_negative/>
+			</flow>
+			<aux name="Prevalence\nof Overweight or\nObese Children">
+				<eqn>NAN(Children_Under_or_Normal_Weight,Children_Overweight_or_Obese)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Risk of\nBecoming\nOverweight or\nObese">
+				<eqn>NAN(Healthy_Eating,Physical_Activity)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Average Time\nto Under or\nNormal Weight">
+				<eqn>NAN(Physical_Activity,Healthy_Eating)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Implementation of\nCHL Intervention">
+				<eqn>NAN(Imitation)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Healthy\nEating">
+				<eqn>NAN(Screentime,Implementation_of_CHL_Intervention)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Physical\nActivity">
+				<eqn>NAN(Screentime,Implementation_of_CHL_Intervention)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Screentime">
+				<eqn>NAN(Implementation_of_CHL_Intervention)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Effect of Overweight or\nObese Prevalence on\nImitation">
+				<eqn>NAN(Prevalence_of_Overweight_or_Obese_Children)</eqn>
+				<isee:delay_aux/>
+			</aux>
+			<aux name="Imitation">
+				<eqn>NAN(Effect_of_Overweight_or_Obese_Prevalence_on_Imitation)</eqn>
+				<isee:delay_aux/>
+			</aux>
+		</variables>
+		<views>
+			<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+				<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:loop_indicator color="black" background="white" vertical_text_align="top" font_size="12pt"/>
+				<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+				<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+					<isee:series_styles>
+						<isee:series_style color="blue" thickness="1"/>
+						<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF7F00" thickness="1"/>
+						<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#FF007F" thickness="1"/>
+						<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+						<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+						<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+						<isee:series_style color="#C8C8C8" thickness="1"/>
+					</isee:series_styles>
+				</graph>
+				<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
+				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
+				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:sim_speed_slider color="black" background="white"/>
+				<isee:time_slider color="#E95F74" background="silver"/>
+				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
+				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
+				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
+				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
+				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
+				<group_input color="black" background="#E0E0E0" font_size="12pt"/>
+				<lamp color="black" background="white" font_size="9pt"/>
+				<gauge color="black" background="white" font_size="9pt" needle_color="#F09F72" bar_color="#EEEEEE" bar_progress_color="black" appearance="radial" num_major_ticks="11" num_minor_ticks="1" show_numeric_value="true"/>
+				<isee:spatial_map color="black" background="white" font_size="12pt"/>
+				<isee:animation_object color="black" background="white" font_size="12pt"/>
+				<isee:navigation_widget color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="6" appearance="tabs" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
+				<isee:shape color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid" opacity="1" transparent_background="true" corner_radius="1"/>
+				<isee:selector color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
+				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+			</style>
+			<view isee:show_pages="false" background="white" isee:converter_size="name_only" page_width="770" page_height="590" isee:scroll_x="46.875" isee:scroll_y="88.75" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
+					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="45" height="35"/>
+					</stock>
+					<flow color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="circle" radius="18"/>
+					</flow>
+					<isee:placeholder color="#228B22" background="white" font_color="#228B22" font_size="9pt" label_side="bottom"/>
+					<module color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
+						<shape type="rectangle" width="55" height="45"/>
+					</module>
+					<aux color="blue" background="white" font_color="blue" font_size="9pt" label_side="bottom">
+						<shape type="name_only"/>
+					</aux>
+					<group color="red" background="white" font_color="red" font_size="9pt"/>
+					<connector color="#FF007F" background="white" font_color="#FF007F" font_size="9pt" isee:thickness="1"/>
+					<text_box color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt"/>
+					<isee:loop_indicator color="black" background="white" vertical_text_align="top" font_size="12pt"/>
+					<numeric_display color="white" background="white" font_size="12pt" border_width="thin" border_style="solid" isee:transparent="false" isee:show_divider="true" isee:show_bounding_box="true" label_side="left"/>
+					<graph color="black" background="white" font_size="12pt" axis_color="#666666" grid_color="#C8C8C8" isee:graph_area_color="white" legend_position="bottom" isee:transparent="false" isee:hide_border="false" axis_title_font_style="normal" axis_title_font_weight="normal" axis_title_text_decoration="none" axis_title_text_align="center" axis_title_vertical_text_align="center" axis_title_font_color="black" axis_title_font_family="Arial" axis_title_font_size="12pt" axis_title_text_padding="2" axis_title_text_border_color="black" axis_title_text_border_width="thin" axis_title_text_border_style="none" axis_label_font_style="normal" axis_label_font_weight="normal" axis_label_text_decoration="none" axis_label_text_align="center" axis_label_vertical_text_align="center" axis_label_font_color="black" axis_label_font_family="Arial" axis_label_font_size="9pt" axis_label_text_padding="2" axis_label_text_border_color="black" axis_label_text_border_width="thin" axis_label_text_border_style="none">
+						<isee:series_styles>
+							<isee:series_style color="blue" thickness="1"/>
+							<isee:series_style color="red" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="fuchsia" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="#008F44" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF7F00" thickness="1"/>
+							<isee:series_style color="#7F00FF" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#0CA0FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="lime" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#FF007F" thickness="1"/>
+							<isee:series_style color="aqua" thickness="1" pen_style="dot_dashed"/>
+							<isee:series_style color="#F586FF" thickness="1" pen_style="dotted"/>
+							<isee:series_style color="black" thickness="1" pen_style="dashed"/>
+							<isee:series_style color="#C8C8C8" thickness="1"/>
+						</isee:series_styles>
+					</graph>
+					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
+				</style>
+				<stock label_side="left" x="168.542" y="253.125" name="Children\nUnder or\nNormal Weight"/>
+				<stock label_side="right" x="360.417" y="253.125" name="Children\nOverweight or\nObese"/>
+				<flow label_side="top" x="258.479" y="253.125" name="Transition to\nOverweight or\nObese">
+					<pts>
+						<pt x="191.042" y="253.125"/>
+						<pt x="337.917" y="253.125"/>
+					</pts>
+				</flow>
+				<flow isee:segment_with_valve="0" label_side="right" x="363.125" y="315.625" name="Transition to\nUnder or Normal\nWeight">
+					<pts>
+						<pt x="363.125" y="270.625"/>
+						<pt x="363.125" y="360.625"/>
+						<pt x="169.792" y="360.625"/>
+						<pt x="169.792" y="270.625"/>
+					</pts>
+				</flow>
+				<aux x="333.625" y="118.875" width="76.25" height="46" name="Prevalence\nof Overweight or\nObese Children"/>
+				<connector uid="1" polarity="-" isee:polarity_placement="outside" angle="72.077">
+					<from>Children_Under_or_Normal_Weight</from>
+					<to>Prevalence_of_Overweight_or_Obese_Children</to>
+				</connector>
+				<connector uid="2" polarity="+" isee:polarity_placement="outside" angle="117.616">
+					<from>Children_Overweight_or_Obese</from>
+					<to>Prevalence_of_Overweight_or_Obese_Children</to>
+				</connector>
+				<connector uid="3" polarity="+" isee:polarity_placement="inside_mid_arc" angle="49.1223">
+					<from>Children_Under_or_Normal_Weight</from>
+					<to>Transition_to_Overweight_or_Obese</to>
+				</connector>
+				<connector uid="4" polarity="+" isee:polarity_placement="inside_mid_arc" angle="231.889">
+					<from>Children_Overweight_or_Obese</from>
+					<to>Transition_to_Under_or_Normal_Weight</to>
+				</connector>
+				<aux x="221.604" y="284.438" width="66.25" height="58" name="Risk of\nBecoming\nOverweight or\nObese"/>
+				<connector uid="5" polarity="+" isee:polarity_placement="inside_mid_arc" angle="93.6743">
+					<from>Risk_of_Becoming_Overweight_or_Obese</from>
+					<to>Transition_to_Overweight_or_Obese</to>
+				</connector>
+				<aux x="368.917" y="350.708" width="69.25" height="46" name="Average Time\nto Under or\nNormal Weight"/>
+				<connector uid="6" angle="110.441">
+					<from>Average_Time_to_Under_or_Normal_Weight</from>
+					<to>Transition_to_Under_or_Normal_Weight</to>
+				</connector>
+				<aux x="509.792" y="401.833" width="81.25" height="34" name="Implementation of\nCHL Intervention"/>
+				<aux x="263.438" y="426.083" width="40.25" height="34" name="Healthy\nEating"/>
+				<aux x="341.5" y="426.083" width="43.25" height="34" name="Physical\nActivity"/>
+				<aux x="433.208" y="505.583" width="55.25" height="22" name="Screentime"/>
+				<connector uid="8" polarity="-" isee:polarity_placement="inside_stem" angle="190.369">
+					<from>Screentime</from>
+					<to>Healthy_Eating</to>
+				</connector>
+				<connector uid="9" polarity="-" isee:polarity_placement="inside_stem" angle="162.933">
+					<from>Screentime</from>
+					<to>Physical_Activity</to>
+				</connector>
+				<connector uid="10" polarity="-" isee:polarity_placement="inside" angle="117.21">
+					<from>Healthy_Eating</from>
+					<to>Risk_of_Becoming_Overweight_or_Obese</to>
+				</connector>
+				<connector uid="11" polarity="-" isee:polarity_placement="inside" angle="114.405">
+					<from>Physical_Activity</from>
+					<to>Risk_of_Becoming_Overweight_or_Obese</to>
+				</connector>
+				<connector uid="12" polarity="-" isee:polarity_placement="inside_stem" angle="46.9624">
+					<from>Physical_Activity</from>
+					<to>Average_Time_to_Under_or_Normal_Weight</to>
+				</connector>
+				<connector uid="13" polarity="-" isee:polarity_placement="inside_stem" angle="52.6496">
+					<from>Healthy_Eating</from>
+					<to>Average_Time_to_Under_or_Normal_Weight</to>
+				</connector>
+				<connector uid="14" isee:label_placement="inside_mid_arc" angle="254.31">
+					<isee:label>CHL</isee:label>
+					<from>Implementation_of_CHL_Intervention</from>
+					<to>Screentime</to>
+				</connector>
+				<connector uid="15" isee:label_placement="inside_mid_arc" angle="270.29">
+					<isee:label>CHL</isee:label>
+					<from>Implementation_of_CHL_Intervention</from>
+					<to>Healthy_Eating</to>
+				</connector>
+				<connector uid="16" isee:label_placement="inside_mid_arc" angle="215.315">
+					<isee:label>CHL</isee:label>
+					<from>Implementation_of_CHL_Intervention</from>
+					<to>Physical_Activity</to>
+				</connector>
+				<aux x="462.292" y="198.125" width="101.25" height="46" name="Effect of Overweight or\nObese Prevalence on\nImitation"/>
+				<aux x="543.5" y="304.625" width="44.25" height="22" name="Imitation"/>
+				<connector uid="17" polarity="+" isee:polarity_placement="inside_stem" angle="348.983">
+					<from>Prevalence_of_Overweight_or_Obese_Children</from>
+					<to>Effect_of_Overweight_or_Obese_Prevalence_on_Imitation</to>
+				</connector>
+				<connector uid="18" polarity="+" isee:polarity_placement="inside_stem" angle="309.203">
+					<from>Effect_of_Overweight_or_Obese_Prevalence_on_Imitation</from>
+					<to>Imitation</to>
+				</connector>
+				<connector uid="19" polarity="+" isee:polarity_placement="inside_stem" angle="279.791">
+					<from>Imitation</from>
+					<to>Implementation_of_CHL_Intervention</to>
+				</connector>
+			</view>
+			<view isee:template_view="template:1" isee:name="Landing Page without image" isee:original_design="Deluxe Prev-Next Blue Green Pastel" background="white" page_width="1066" page_height="600" home_view="true" type="interface">
+				<style/>
+				<text_box z_index="3" font_color="#284B63" font_size="16pt" appearance="transparent" x="62.9484" y="334.573" width="472.088" height="64.3478">Insert subtitle here, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</text_box>
+				<button z_index="3" background="#3D405B" font_color="#F4F1DE" font_family="Arial Rounded MT Bold" font_size="18pt" border_width="thin" border_style="none" corner_radius="26" isee:flat="false" isee:highlight_on_hover="true" label="LET'S GO!" isee:tooltip="" x="212.447" y="423.409" width="173.091" height="44.5455">
+					<actions>
+						<action target="next_page">navigate</action>
+					</actions>
+				</button>
+				<text_box z_index="3" font_weight="bold" font_color="#3C6E71" font_size="36pt" appearance="transparent" x="67.3455" y="221.276" width="505.399" height="85.1739">Insert project title here
+Lorem ipsum dolor sit amet</text_box>
+				<isee:shape background="#CEDBDC" border_width="thin" border_style="none" transparent_background="false" x="0" y="60" width="1000" height="480" kind="rectangle"/>
+				<isee:shape border_color="#284B63" border_width="6" x="62.5368" y="302.381" width="609.474" height="18.9344" kind="hline"/>
+			</view>
+			<isee:templates>
+				<view isee:name="Plain base" isee:original_design="Deluxe Prev-Next Blue Green Pastel" background="white" page_width="1066" page_height="600" type="template">
+					<style/>
+					<isee:shape background="#F7F7F7" border_width="thin" border_style="none" transparent_background="false" x="0" y="0" width="1066" height="600" kind="rectangle"/>
+					<graphics_frame z_index="2" fill="none" x="12.4806" y="16.9825" width="166" height="34">
+						<image width="121" height="20" size_to_parent="false" isee:transparency="0" isee:fixed_aspect_ratio="true">/Applications/Stella Architect.app/Contents/Resources/designs/Deluxe Prev-Next Blue Green Pastel_Graphics/Your logo dark.png</image>
+					</graphics_frame>
+				</view>
+			</isee:templates>
+			<isee:stories>
+				<isee:story uid="20" name="Story 1">
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Children_Overweight_or_Obese"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+							</isee:visible_list>
+							<isee:highlight_list/>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<item uid="2"/>
+								<item uid="1"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<entity name="Children_Overweight_or_Obese"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<item uid="2"/>
+								<item uid="1"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<item uid="2"/>
+								<item uid="5"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<item uid="1"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+								<item uid="3"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<entity name="Children_Overweight_or_Obese"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<item uid="5"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<item uid="3"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<item uid="6"/>
+								<item uid="2"/>
+								<entity name="Transition_to_Under_or_Normal_Weight"/>
+								<entity name="Children_Overweight_or_Obese"/>
+								<entity name="Average_Time_to_Under_or_Normal_Weight"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<item uid="3"/>
+								<item uid="1"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<item uid="4"/>
+								<item uid="5"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name="Average_Time_to_Under_or_Normal_Weight"/>
+								<item uid="6"/>
+								<item uid="4"/>
+								<entity name="Transition_to_Under_or_Normal_Weight"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<item uid="12"/>
+								<item uid="13"/>
+								<item uid="5"/>
+								<item uid="4"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<item uid="1"/>
+								<item uid="11"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+								<entity name="Healthy_Eating"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<item uid="10"/>
+								<entity name="Average_Time_to_Under_or_Normal_Weight"/>
+								<item uid="3"/>
+								<entity name="Children_Overweight_or_Obese"/>
+								<entity name="Transition_to_Under_or_Normal_Weight"/>
+								<item uid="2"/>
+								<entity name="Physical_Activity"/>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<item uid="6"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<item uid="12"/>
+								<item uid="13"/>
+								<entity name="Physical_Activity"/>
+								<item uid="11"/>
+								<entity name="Healthy_Eating"/>
+								<item uid="10"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<item uid="9"/>
+								<item uid="6"/>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<entity name="Physical_Activity"/>
+								<item uid="2"/>
+								<entity name="Transition_to_Under_or_Normal_Weight"/>
+								<entity name="Children_Overweight_or_Obese"/>
+								<entity name="Average_Time_to_Under_or_Normal_Weight"/>
+								<item uid="3"/>
+								<item uid="8"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<item uid="10"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+								<entity name="Healthy_Eating"/>
+								<item uid="1"/>
+								<item uid="11"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<entity name="Screentime"/>
+								<item uid="4"/>
+								<item uid="5"/>
+								<item uid="13"/>
+								<item uid="12"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<entity name="Screentime"/>
+								<item uid="8"/>
+								<item uid="9"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" isee:scroll_x="364" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Imitation"/>
+								<entity name="Effect_of_Overweight_or_Obese_Prevalence_on_Imitation"/>
+								<item uid="17"/>
+								<item uid="12"/>
+								<item uid="13"/>
+								<item uid="5"/>
+								<item uid="4"/>
+								<entity name="Screentime"/>
+								<item uid="16"/>
+								<item uid="14"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<item uid="1"/>
+								<item uid="11"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+								<entity name="Healthy_Eating"/>
+								<item uid="8"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<item uid="10"/>
+								<item uid="19"/>
+								<entity name="Average_Time_to_Under_or_Normal_Weight"/>
+								<item uid="3"/>
+								<entity name="Implementation_of_CHL_Intervention"/>
+								<item uid="18"/>
+								<entity name="Children_Overweight_or_Obese"/>
+								<entity name="Transition_to_Under_or_Normal_Weight"/>
+								<item uid="15"/>
+								<item uid="2"/>
+								<item uid="6"/>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<entity name="Physical_Activity"/>
+								<item uid="9"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<item uid="15"/>
+								<item uid="16"/>
+								<item uid="14"/>
+								<item uid="19"/>
+								<entity name="Imitation"/>
+								<entity name="Implementation_of_CHL_Intervention"/>
+								<item uid="18"/>
+								<entity name="Effect_of_Overweight_or_Obese_Prevalence_on_Imitation"/>
+								<item uid="17"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+					<view background="white" page_width="1066" page_height="600" type="interface">
+						<style/>
+						<isee:model_view x="0" y="0" width="1066" height="600" isee:locked="true" zoom="1" center_x="237" center_y="290" locked_view="true" transparent="true" use_visible_list="true" show_ltm_table="false">
+							<model name="Top-Level"/>
+							<isee:visible_list>
+								<entity name="Imitation"/>
+								<entity name="Effect_of_Overweight_or_Obese_Prevalence_on_Imitation"/>
+								<item uid="17"/>
+								<item uid="9"/>
+								<item uid="6"/>
+								<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
+								<entity name="Physical_Activity"/>
+								<item uid="15"/>
+								<item uid="2"/>
+								<entity name="Transition_to_Under_or_Normal_Weight"/>
+								<item uid="18"/>
+								<entity name="Implementation_of_CHL_Intervention"/>
+								<entity name="Children_Overweight_or_Obese"/>
+								<item uid="19"/>
+								<entity name="Average_Time_to_Under_or_Normal_Weight"/>
+								<item uid="3"/>
+								<item uid="8"/>
+								<entity name="Children_Under_or_Normal_Weight"/>
+								<item uid="10"/>
+								<entity name="Transition_to_Overweight_or_Obese"/>
+								<entity name="Healthy_Eating"/>
+								<item uid="1"/>
+								<item uid="11"/>
+								<item uid="14"/>
+								<item uid="16"/>
+								<entity name="Risk_of_Becoming_Overweight_or_Obese"/>
+								<entity name="Screentime"/>
+								<item uid="4"/>
+								<item uid="5"/>
+								<item uid="13"/>
+								<item uid="12"/>
+							</isee:visible_list>
+							<isee:highlight_list>
+								<item uid="15"/>
+								<item uid="14"/>
+								<item uid="16"/>
+								<entity name="Implementation_of_CHL_Intervention"/>
+							</isee:highlight_list>
+						</isee:model_view>
+					</view>
+				</isee:story>
+			</isee:stories>
+		</views>
+	</model>
+</xmile>
+

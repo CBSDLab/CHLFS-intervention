@@ -261,9 +261,11 @@ SUM(Total_Children[*,*,Group,Jurisdiction])</eqn>
 				<entity name="CHL_Intervention_Efficacy"/>
 				<entity name="Coefficient_of_Imitation"/>
 				<entity name="Coefficient_of_Innovation"/>
+				<entity name="Effect_of_Overweight_or_Obese_Children_on_Imitation"/>
 				<entity name="Imitation"/>
 				<entity name="Implementation"/>
 				<entity name="Implementation_Ref_Mode"/>
+				<entity name="Initial_Coefficient_of_Imitation"/>
 				<entity name="Initial_Potential_Users"/>
 				<entity name="Innovation"/>
 				<entity name="Potential_Users"/>
@@ -299,7 +301,8 @@ Imitation</eqn>
 				<units>1/Months</units>
 			</aux>
 			<aux name="Coefficient\nof Imitation">
-				<eqn>4</eqn>
+				<eqn>Initial_Coefficient_of_Imitation*
+Effect_of_Overweight_or_Obese_Children_on_Imitation</eqn>
 				<units>1/Months</units>
 			</aux>
 			<aux name="Imitation">
@@ -328,6 +331,20 @@ CHL_Intervention_Efficacy</eqn>
 			</aux>
 			<aux name="CHL Intervention\nEfficacy">
 				<eqn>1</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="Initial Coefficient\nof Imitation">
+				<eqn>4</eqn>
+				<units>1/Months</units>
+			</aux>
+			<aux name="Effect of\nOverweight or\nObese Children\non Imitation">
+				<eqn>MEAN(Prevalence_of_Overweight_or_Obese_Children)/
+INIT(MEAN(Prevalence_of_Overweight_or_Obese_Children))</eqn>
+				<gf>
+					<xscale min="0" max="2"/>
+					<yscale min="0" max="2"/>
+					<ypts>0,0.02526,0.08682,0.2331,0.5352,1,1.465,1.767,1.913,1.975,2</ypts>
+				</gf>
 				<units>Dimensionless</units>
 			</aux>
 		</variables>
@@ -379,7 +396,7 @@ CHL_Intervention_Efficacy</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="true" background="white" page_width="770" page_height="590" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="576.25" isee:scroll_y="152.5" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="true" background="white" page_width="770" page_height="590" isee:page_cols="2" isee:page_rows="2" isee:scroll_y="657.5" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -489,7 +506,6 @@ CHL_Intervention_Efficacy</eqn>
 				<group locked="false" x="783.571" y="37.4286" width="732" height="516" name="Measures">
 					<item uid="10"/>
 					<item uid="11"/>
-					<item uid="16"/>
 					<item uid="19"/>
 					<item uid="20"/>
 					<item uid="63"/>
@@ -518,8 +534,41 @@ CHL_Intervention_Efficacy</eqn>
 					</from>
 					<to>Prevalence_of_Overweight_or_Obese_Children</to>
 				</connector>
-				<stacked_container uid="16" x="1116.86" y="82.1429" width="371" height="319.571">
-					<graph width="371" height="319.571" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+				<stacked_container uid="16" x="856.235" y="660.893" width="522.875" height="385.196" visible_index="1">
+					<graph legend_position="bottom" width="522.875" height="385.196" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" pen_style="dotted" title="Intervention Reference Mode" isee:keep_zero_visible="false" pen_width="2" index="0" show_y_axis="true">
+							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Intervention]"/>
+							<scale min="0.25" max="0.4"/>
+						</plot>
+						<plot color="red" pen_style="dotted" title="Control Reference Mode" isee:keep_zero_visible="true" pen_width="2" index="1" show_y_axis="true">
+							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Control]"/>
+						</plot>
+						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="2" index="0" right_axis="true" show_y_axis="true">
+							<entity name="Implementation"/>
+						</plot>
+					</graph>
+					<graph legend_position="bottom" width="522.875" height="385.196" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" pen_style="dotted" title="Reference Mode Prevalence of Overweight or Obese Children (intervention)" isee:keep_zero_visible="false" pen_width="2" index="0" show_y_axis="true">
+							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Intervention]"/>
+							<scale min="0.25" max="0.4"/>
+						</plot>
+						<plot color="red" pen_style="dotted" title="Control Reference Mode" isee:keep_zero_visible="true" pen_width="2" index="1" show_y_axis="true">
+							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Control]"/>
+						</plot>
+						<plot color="fuchsia" pen_style="dotted" isee:keep_zero_visible="true" pen_width="2" index="0" right_axis="true" show_y_axis="true">
+							<entity name="Implementation"/>
+						</plot>
+						<plot color="#0433FF" title="Simulated Prevalence of Overweight or Obese Children (intervention)" isee:keep_zero_visible="true" pen_width="2" index="2" show_y_axis="true">
+							<entity name="Prevalence_of_Overweight_or_Obese_Children[Intervention, Hawai'i]"/>
+						</plot>
+						<plot color="#FF2600" title="Simulated Prevalence of Overweight or Obese Children[Control]" isee:keep_zero_visible="true" pen_width="1" index="3" show_y_axis="true">
+							<entity name="Prevalence_of_Overweight_or_Obese_Children[Control, Hawai'i]"/>
+						</plot>
+						<plot color="#FF2F92" title="Simulated Implementation" isee:keep_zero_visible="true" pen_width="1" index="1" right_axis="true" show_y_axis="true">
+							<entity name="Implementation"/>
+						</plot>
+					</graph>
+					<graph width="522.875" height="385.196" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" pen_style="dotted" title="Intervention Reference Mode" isee:keep_zero_visible="false" pen_width="2" index="0" show_y_axis="true">
 							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Intervention]"/>
 							<scale min="0.25" max="0.4"/>
@@ -538,6 +587,7 @@ CHL_Intervention_Efficacy</eqn>
 				<aux x="910" y="467.857" name="Reference Mode Prevalence of\nOverweight or Obese Children"/>
 				<group locked="false" x="21.4286" y="627.429" width="732" height="523" name="Intervention">
 					<item uid="56"/>
+					<item uid="64"/>
 				</group>
 				<connector uid="39" angle="189.824">
 					<from>Aging_Out_of_8_Year_Olds_1</from>
@@ -557,7 +607,7 @@ CHL_Intervention_Efficacy</eqn>
 					</pts>
 				</flow>
 				<aux label_side="top" x="136.5" y="784.429" name="Coefficient\nof Innovation"/>
-				<aux label_side="bottom" x="224.625" y="1057.46" name="Coefficient\nof Imitation"/>
+				<aux label_side="right" x="224.625" y="1060.59" name="Coefficient\nof Imitation"/>
 				<aux label_side="right" x="224.625" y="1004.38" name="Imitation"/>
 				<connector uid="45" polarity="+" isee:polarity_placement="inside" angle="282.604">
 					<from>Potential_Users</from>
@@ -624,6 +674,22 @@ CHL_Intervention_Efficacy</eqn>
 					</from>
 					<to>Hazard_Rate</to>
 				</connector>
+				<aux label_side="bottom" x="224.625" y="1109.34" name="Initial Coefficient\nof Imitation"/>
+				<connector uid="65" angle="90">
+					<from>Initial_Coefficient_of_Imitation</from>
+					<to>Coefficient_of_Imitation</to>
+				</connector>
+				<aux x="146.375" y="1060.59" name="Effect of\nOverweight or\nObese Children\non Imitation"/>
+				<connector uid="66" angle="0">
+					<from>
+						<alias uid="64"/>
+					</from>
+					<to>Effect_of_Overweight_or_Obese_Children_on_Imitation</to>
+				</connector>
+				<connector uid="67" angle="0">
+					<from>Effect_of_Overweight_or_Obese_Children_on_Imitation</from>
+					<to>Coefficient_of_Imitation</to>
+				</connector>
 				<alias font_style="italic" uid="10" x="856.786" y="115.429" width="45" height="35">
 					<of>Children_Under_or_Normal_Weight</of>
 				</alias>
@@ -643,6 +709,9 @@ CHL_Intervention_Efficacy</eqn>
 				<alias color="blue" background="white" font_style="italic" uid="63" x="1240.38" y="426" width="18" height="18">
 					<shape type="circle" radius="18"/>
 					<of>CHL_Intervention_Efficacy</of>
+				</alias>
+				<alias font_style="italic" uid="64" x="52.375" y="1051.59" width="18" height="18">
+					<of>Prevalence_of_Overweight_or_Obese_Children</of>
 				</alias>
 			</view>
 		</views>
