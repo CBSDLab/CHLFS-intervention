@@ -2,12 +2,12 @@
 <xmile version="1.0" xmlns="http://docs.oasis-open.org/xmile/ns/XMILE/v1.0" xmlns:isee="http://iseesystems.com/XMILE">
 	<header>
 		<smile version="1.0" namespace="std, isee" uses_arrays="4"/>
-		<name>CHL intervention v3</name>
-		<uuid>0ab5b581-7057-4f99-9dc9-71f9c76e17c1</uuid>
+		<name>CHL Intervention</name>
+		<uuid>3b21f884-9890-4339-aaba-5528812ed389</uuid>
 		<vendor>isee systems, inc.</vendor>
-		<product version="3.3" isee:build_number="2953" isee:saved_by_v1="true" lang="en">Stella Architect</product>
+		<product version="3.8" isee:build_number="3570" isee:saved_by_v1="true" lang="en">Stella Architect</product>
 	</header>
-	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="Euler" time_units="Years" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
+	<sim_specs isee:sim_duration="0" isee:run_prefix="Run" isee:simulation_delay="0" isee:restore_on_start="false" method="Euler" time_units="Years" isee:instantaneous_flows="false" isee:ignore_module_errors="false" isee:strict_units="false" isee:loop_scores="true" isee:loop_exhaustive_allowed="1000">
 		<start>2013</start>
 		<stop>2019</stop>
 		<dt reciprocal="true">64</dt>
@@ -39,15 +39,15 @@
 		<isee:time_format name="Builtin" type="adaptive"/>
 		<isee:time_format name="TimeLabel1" precision="1" scale_by="1" type="number"/>
 	</isee:time_formats>
+	<isee:number_format_extenders/>
 	<default_format/>
 	<data>
 		<export enabled="false" resource="r../results.csv" interval="DT" precomputed="false" isee:format="numbers">
 			<all/>
 		</export>
-		<import enabled="false" isee:overwrite="false" resource="r../init.csv"/>
-		<import enabled="false" isee:overwrite="false" resource="r../parms.csv"/>
-		<import enabled="false" isee:overwrite="false" resource="r../refmode.csv"/>
-		<import enabled="false" isee:overwrite="false" orientation="horizontal" resource="r../parms horizontal.xlsx" type="Excel" worksheet="parms horizontal"/>
+		<import isee:overwrite="false" resource="r../Data/init.csv"/>
+		<import isee:overwrite="false" resource="r../Data/refmode.csv"/>
+		<import isee:overwrite="false" orientation="horizontal" resource="r../Data/parms horizontal.xlsx" type="Excel" worksheet="parms horizontal"/>
 	</data>
 	<model_units>
 		<unit name="Dimensionless">
@@ -60,6 +60,11 @@
 			<eqn/>
 			<alias>person</alias>
 			<alias>persons</alias>
+		</unit>
+		<unit name="Months">
+			<eqn/>
+			<alias>mo</alias>
+			<alias>month</alias>
 		</unit>
 		<unit name="Years">
 			<eqn/>
@@ -182,7 +187,7 @@ Time_in_Age_Group</eqn>
 					<dim name="Group"/>
 				</dimensions>
 				<eqn>IF Group=1 THEN 
-  Base_Hazard_Rate*CHL_Intervention*CHL_Maintenance
+  Base_Hazard_Rate*CHL_Intervention_Effectiveness
 ELSE
   Base_Hazard_Rate</eqn>
 				<units>1/Years</units>
@@ -192,23 +197,23 @@ ELSE
 				<units>1/Years</units>
 			</aux>
 			<group name="Population" run="false">
-				<entity name="Initial_Prevalence_of_Overweight_or_Obesity"/>
-				<entity name="Initial_Number_of_Children"/>
-				<entity name="Base_Hazard_Rate"/>
-				<entity name="Aging_Out_of_8_Year_Olds_2"/>
-				<entity name="Children_Under_or_Normal_Weight"/>
-				<entity name="Time_in_Age_Group"/>
-				<entity name="Hazard_Rate"/>
 				<entity name="Aging_Into_2_Year_Olds_1"/>
 				<entity name="Aging_Into_2_Year_Olds_2"/>
-				<entity name="Children_Overweight_or_Obese"/>
 				<entity name="Aging_Out_of_8_Year_Olds_1"/>
+				<entity name="Aging_Out_of_8_Year_Olds_2"/>
+				<entity name="Base_Hazard_Rate"/>
+				<entity name="Children_Overweight_or_Obese"/>
+				<entity name="Children_Under_or_Normal_Weight"/>
+				<entity name="Hazard_Rate"/>
+				<entity name="Initial_Number_of_Children"/>
+				<entity name="Initial_Prevalence_of_Overweight_or_Obesity"/>
 				<entity name="Net_Change_in_Children"/>
+				<entity name="Time_in_Age_Group"/>
 			</group>
 			<group name="Measures" run="false">
-				<entity name="Total_Children"/>
 				<entity name="Prevalence_of_Overweight_or_Obese_Children"/>
 				<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children"/>
+				<entity name="Total_Children"/>
 			</group>
 			<aux name="Total Children">
 				<dimensions>
@@ -250,49 +255,80 @@ SUM(Total_Children[*,*,Group,Jurisdiction])</eqn>
 				<eqn>TIME</eqn>
 				<units>Dimensionless</units>
 			</aux>
-			<aux name="CHL Intervention\nES">
-				<eqn>1</eqn>
-				<units>Dimensionless</units>
-			</aux>
-			<aux name="CHL Maintenance">
-				<eqn>1+STEP(CHL_Maintenance_ES, CHL_Intervention_T2) -
-STEP(CHL_Maintenance_ES, CHL_Intervention_T2+CHL_Maintenance_Duration)</eqn>
-				<units>Dimensionless</units>
-			</aux>
-			<aux name="CHL Intervention T1">
-				<eqn>2013</eqn>
-				<units>Year</units>
-			</aux>
-			<group name="Intervention" run="false">
-				<entity name="CHL_Intervention_ES"/>
-				<entity name="CHL_Intervention"/>
-				<entity name="CHL_Intervention_T1"/>
-				<entity name="CHL_Intervention_Duration"/>
-				<entity name="CHL_Maintenance_ES"/>
-				<entity name="CHL_Maintenance_Duration"/>
-				<entity name="CHL_Intervention_T2"/>
-				<entity name="CHL_Maintenance"/>
+			<group name="Intervention" run="true">
+				<entity name="Adoption"/>
+				<entity name="CHL_Intervention_Effectiveness"/>
+				<entity name="CHL_Intervention_Efficacy"/>
+				<entity name="Coefficient_of_Imitation"/>
+				<entity name="Coefficient_of_Innovation"/>
+				<entity name="Imitation"/>
+				<entity name="Implementation"/>
+				<entity name="Implementation_Ref_Mode"/>
+				<entity name="Initial_Potential_Users"/>
+				<entity name="Innovation"/>
+				<entity name="Potential_Users"/>
+				<entity name="Users"/>
 			</group>
-			<aux name="CHL\nIntervention">
-				<eqn>1 +STEP(CHL_Intervention_ES, CHL_Intervention_T1) -
-STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
+			<aux name="Implementation\nRef Mode">
+				<eqn>TIME</eqn>
+				<gf>
+					<xscale min="2013" max="2015.25"/>
+					<yscale min="0" max="1"/>
+					<ypts>0,0.001175,0.002496,0.003982,0.005658,0.00755,0.00969,0.01211,0.01485,0.01796,0.02148,0.02547,0.02998,0.0351,0.04089,0.04743,0.05482,0.06314,0.07251,0.08303,0.0948,0.1079,0.1226,0.1388,0.1566,0.1763,0.1977,0.221,0.2462,0.2731,0.3018,0.3321,0.3638,0.3968,0.4306,0.4651,0.5,0.5349,0.5694,0.6032,0.6362,0.6679,0.6982,0.7269,0.7538,0.779,0.8023,0.8237,0.8434,0.8612,0.8774,0.8921,0.9052,0.917,0.9275,0.9369,0.9452,0.9526,0.9591,0.9649,0.97,0.9745,0.9785,0.982,0.9851,0.9879,0.9903,0.9924,0.9943,0.996,0.9975,0.9988,1</ypts>
+				</gf>
 				<units>Dimensionless</units>
 			</aux>
-			<aux name="CHL Intervention Duration">
-				<eqn>2</eqn>
-				<units>Years</units>
+			<stock name="Potential\nUsers">
+				<eqn>Initial_Potential_Users</eqn>
+				<outflow>Adoption</outflow>
+				<units>Users</units>
+			</stock>
+			<stock name="Users">
+				<eqn>0</eqn>
+				<inflow>Adoption</inflow>
+				<units>Users</units>
+			</stock>
+			<flow name="Adoption">
+				<eqn>Innovation + 
+Imitation</eqn>
+				<non_negative/>
+				<units>Users/Years</units>
+			</flow>
+			<aux name="Coefficient\nof Innovation">
+				<eqn>0.05</eqn>
+				<units>1/Months</units>
 			</aux>
-			<aux name="CHL Maintenance\nES">
+			<aux name="Coefficient\nof Imitation">
+				<eqn>4</eqn>
+				<units>1/Months</units>
+			</aux>
+			<aux name="Imitation">
+				<eqn>Coefficient_of_Imitation*
+Potential_Users*Users/
+(Users+Potential_Users)</eqn>
+				<units>Users/Month</units>
+			</aux>
+			<aux name="Innovation">
+				<eqn>Coefficient_of_Innovation*
+Potential_Users</eqn>
+				<units>Users/Month</units>
+			</aux>
+			<aux name="Initial\nPotential\nUsers">
+				<eqn>5000</eqn>
+				<units>Users</units>
+			</aux>
+			<aux name="Implementation">
+				<eqn>Users/Initial_Potential_Users</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Intervention\nEffectiveness">
+				<eqn>Implementation*
+CHL_Intervention_Efficacy</eqn>
+				<units>Dimensionless</units>
+			</aux>
+			<aux name="CHL Intervention\nEfficacy">
 				<eqn>1</eqn>
 				<units>Dimensionless</units>
-			</aux>
-			<aux name="CHL Maintenance Duration">
-				<eqn>2</eqn>
-				<units>Years</units>
-			</aux>
-			<aux name="CHL Intervention T2">
-				<eqn>CHL_Intervention_T1+CHL_Intervention_Duration</eqn>
-				<units>Years</units>
 			</aux>
 		</variables>
 		<views>
@@ -321,12 +357,14 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 				<button color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595"/>
 				<isee:annotation color="black" background="#E0E0E0" font_size="12pt" border_width="thin" border_style="solid" transparent="false" corner_radius="0" isee:flat="false" icon_side="top" isee:highlight_on_hover="false" isee:highlight_color="#959595" popup_corner_radius="0" popup_background_color="#FFFECF"/>
 				<slider color="#66CC66" background="#E0E0E0" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" vertical="false" isee:fancy_appearance="false" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
+				<isee:stacked_container color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" padding="6 8" border_color="#999999" border_width="thin" border_style="solid" item_spacing="0" corner_radius="4" selected_item_color="black" selected_item_background="white" item_background="#DDDDDD" transparent_bg="false"/>
 				<isee:dual_slider color="#66CC66" background="silver" font_size="12pt" num_ticks="3" label_side="top" wrap_title="true" isee:show_hover_tip="when_deciding" input_expands="true" input_width="100"/>
 				<isee:sim_speed_slider color="black" background="white"/>
 				<isee:time_slider color="#E95F74" background="silver"/>
 				<isee:pie_input color="black" background="white" font_size="12pt" legend_position="bottom" isee:transparent="false"/>
 				<knob color="#66CC66" background="#E0E0E0" font_size="12pt" label_side="bottom" wrap_title="true"/>
 				<numeric_input color="black" background="#E0E0E0" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
+				<isee:dropdown_input color="black" background="white" font_size="12pt" label_side="left" wrap_title="true" input_expands="false" input_width="100"/>
 				<switch color="black" background="#E0E0E0" font_size="12pt" label_side="top" wrap_title="true" isee:appearance="switch" isee:on_color="green"/>
 				<options color="black" background="white" appearance="radio-buttons" arrangement="vertical"/>
 				<graphical_input color="black" background="#E0E0E0" font_size="12pt" isee:show_hover_tip="true"/>
@@ -341,7 +379,7 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" hide_border="false" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="true" background="white" page_width="768" page_height="588" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="118" isee:scroll_y="23" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
+			<view isee:show_pages="true" background="white" page_width="770" page_height="590" isee:page_cols="2" isee:page_rows="2" isee:scroll_x="576.25" isee:scroll_y="152.5" zoom="160" isee:popup_graphs_are_comparative="true" isee:enable_non_negative_highlights="false" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -392,8 +430,8 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 						<pt x="250.5" y="261.143"/>
 					</pts>
 				</flow>
-				<stock x="423.5" y="243.643" width="45" height="35" name="Children\nOverweight or\nObese"/>
-				<stock x="250.5" y="243.643" width="45" height="35" name="Children Under or\nNormal Weight"/>
+				<stock x="446" y="261.143" name="Children\nOverweight or\nObese"/>
+				<stock x="273" y="261.143" name="Children Under or\nNormal Weight"/>
 				<flow label_side="top" x="517.25" y="261.143" name="Aging Into 2\nYear Olds 2">
 					<pts>
 						<pt x="566" y="261.143"/>
@@ -446,8 +484,7 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 					<to>Hazard_Rate</to>
 				</connector>
 				<group locked="true" x="22.86" y="37.4286" width="732" height="516" name="Population">
-					<item uid="32"/>
-					<item uid="31"/>
+					<item uid="61"/>
 				</group>
 				<group locked="false" x="783.571" y="37.4286" width="732" height="516" name="Measures">
 					<item uid="10"/>
@@ -455,10 +492,7 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 					<item uid="16"/>
 					<item uid="19"/>
 					<item uid="20"/>
-					<item uid="35"/>
-					<item uid="36"/>
-					<item uid="37"/>
-					<item uid="38"/>
+					<item uid="63"/>
 				</group>
 				<aux label_side="right" x="1001.43" y="132.929" name="Total Children"/>
 				<connector uid="12" angle="0">
@@ -485,7 +519,7 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 					<to>Prevalence_of_Overweight_or_Obese_Children</to>
 				</connector>
 				<stacked_container uid="16" x="1116.86" y="82.1429" width="371" height="319.571">
-					<graph width="371" height="319.571" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+					<graph width="371" height="319.571" type="time_series" isee:time_format_id="Builtin" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="4" num_y_labels="2" title="Obesity or Underweight (Hawai'i) " isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_title="Prevalence" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
 						<plot color="blue" pen_style="dotted" title="Intervention Reference Mode" isee:keep_zero_visible="false" pen_width="2" index="0" show_y_axis="true">
 							<entity name="Reference_Mode_Prevalence_of_Overweight_or_Obese_Children[Intervention]"/>
 							<scale min="0.25" max="0.4"/>
@@ -502,59 +536,9 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 					</graph>
 				</stacked_container>
 				<aux x="910" y="467.857" name="Reference Mode Prevalence of\nOverweight or Obese Children"/>
-				<aux label_side="left" x="315.357" y="689.429" name="CHL Intervention\nES"/>
-				<aux label_side="right" x="418.357" y="838.429" name="CHL Maintenance"/>
-				<aux label_side="left" x="315.357" y="722.429" name="CHL Intervention T1"/>
-				<group locked="false" x="21.4286" y="627.429" width="732" height="523" name="Intervention"/>
-				<aux label_side="right" x="418.357" y="689.429" name="CHL\nIntervention"/>
-				<aux label_side="left" x="315.357" y="758.429" name="CHL Intervention Duration"/>
-				<connector uid="21" angle="359.082">
-					<from>CHL_Intervention_ES</from>
-					<to>CHL_Intervention</to>
-				</connector>
-				<connector uid="23" angle="2.58572">
-					<from>CHL_Intervention_Duration</from>
-					<to>CHL_Intervention_T2</to>
-				</connector>
-				<aux label_side="left" x="315.357" y="868.429" name="CHL Maintenance\nES"/>
-				<aux label_side="left" x="318.357" y="838.429" name="CHL Maintenance Duration"/>
-				<connector uid="24" angle="16.4103">
-					<from>CHL_Maintenance_ES</from>
-					<to>CHL_Maintenance</to>
-				</connector>
-				<connector uid="26" angle="0">
-					<from>CHL_Maintenance_Duration</from>
-					<to>CHL_Maintenance</to>
-				</connector>
-				<aux x="383.86" y="758.429" name="CHL Intervention T2"/>
-				<connector uid="27" angle="337.549">
-					<from>CHL_Intervention_T1</from>
-					<to>CHL_Intervention_T2</to>
-				</connector>
-				<connector uid="28" angle="57.9983">
-					<from>CHL_Intervention_T2</from>
-					<to>CHL_Intervention</to>
-				</connector>
-				<connector uid="29" angle="11.4839">
-					<from>CHL_Intervention_T1</from>
-					<to>CHL_Intervention</to>
-				</connector>
-				<connector uid="30" angle="285.675">
-					<from>CHL_Intervention_T2</from>
-					<to>CHL_Maintenance</to>
-				</connector>
-				<connector uid="33" angle="297.408">
-					<from>
-						<alias uid="31"/>
-					</from>
-					<to>Hazard_Rate</to>
-				</connector>
-				<connector uid="34" angle="340.548">
-					<from>
-						<alias uid="32"/>
-					</from>
-					<to>Hazard_Rate</to>
-				</connector>
+				<group locked="false" x="21.4286" y="627.429" width="732" height="523" name="Intervention">
+					<item uid="56"/>
+				</group>
 				<connector uid="39" angle="189.824">
 					<from>Aging_Out_of_8_Year_Olds_1</from>
 					<to>Aging_Into_2_Year_Olds_1</to>
@@ -562,6 +546,83 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 				<connector uid="40" angle="4.43845">
 					<from>Aging_Out_of_8_Year_Olds_2</from>
 					<to>Aging_Into_2_Year_Olds_2</to>
+				</connector>
+				<aux x="85" y="674" name="Implementation\nRef Mode"/>
+				<stock x="87" y="926.125" name="Potential\nUsers"/>
+				<stock x="287" y="926.125" name="Users"/>
+				<flow label_side="right" label_angle="45" x="181" y="926.125" name="Adoption">
+					<pts>
+						<pt x="109.5" y="926.125"/>
+						<pt x="264.5" y="926.125"/>
+					</pts>
+				</flow>
+				<aux label_side="top" x="136.5" y="784.429" name="Coefficient\nof Innovation"/>
+				<aux label_side="bottom" x="224.625" y="1057.46" name="Coefficient\nof Imitation"/>
+				<aux label_side="right" x="224.625" y="1004.38" name="Imitation"/>
+				<connector uid="45" polarity="+" isee:polarity_placement="inside" angle="282.604">
+					<from>Potential_Users</from>
+					<to>Imitation</to>
+				</connector>
+				<connector uid="46" polarity="+" isee:polarity_placement="inside" angle="259.904">
+					<from>Users</from>
+					<to>Imitation</to>
+				</connector>
+				<connector uid="47" polarity="+" isee:polarity_placement="outside" angle="90">
+					<from>Coefficient_of_Imitation</from>
+					<to>Imitation</to>
+				</connector>
+				<connector uid="48" polarity="+" isee:polarity_placement="inside" angle="156.038">
+					<from>Imitation</from>
+					<to>Adoption</to>
+				</connector>
+				<aux label_side="right" label_angle="45" x="136.5" y="836.875" name="Innovation"/>
+				<connector uid="49" polarity="+" isee:polarity_placement="outside" angle="270">
+					<from>Coefficient_of_Innovation</from>
+					<to>Innovation</to>
+				</connector>
+				<connector uid="50" polarity="+" isee:polarity_placement="inside" angle="93.4566">
+					<from>Potential_Users</from>
+					<to>Innovation</to>
+				</connector>
+				<connector uid="51" polarity="+" isee:polarity_placement="inside" angle="342.646">
+					<from>Innovation</from>
+					<to>Adoption</to>
+				</connector>
+				<aux label_side="right" x="395.875" y="986.375" name="Initial\nPotential\nUsers"/>
+				<aux x="335.25" y="1022.38" name="Implementation"/>
+				<connector uid="52" polarity="-" isee:polarity_placement="outside" angle="210.702">
+					<from>Initial_Potential_Users</from>
+					<to>Implementation</to>
+				</connector>
+				<connector uid="53" polarity="+" isee:polarity_placement="outside" angle="296.299">
+					<from>Users</from>
+					<to>Implementation</to>
+				</connector>
+				<stacked_container uid="56" x="430.625" y="650.5" width="291.875" height="250">
+					<graph width="291.875" height="250" type="time_series" show_grid="false" isee:tick_type="none" include_units_in_legend="false" plot_numbers="true" isee:label_pie_slices="false" isee:show_pie_borders="true" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" isee:allow_zero_axis="true" left_axis_multi_scale="false" left_axis_auto_scale="true" left_include_units="true" right_axis_multi_scale="false" right_axis_auto_scale="true" right_include_units="true">
+						<plot color="blue" isee:keep_zero_visible="true" pen_width="1" index="0" show_y_axis="true">
+							<entity name="Implementation_Ref_Mode"/>
+						</plot>
+						<plot color="red" pen_style="dotted" isee:keep_zero_visible="true" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Implementation"/>
+						</plot>
+					</graph>
+				</stacked_container>
+				<aux x="335.25" y="1097.5" name="CHL Intervention\nEffectiveness"/>
+				<connector uid="59" angle="274.764">
+					<from>Implementation</from>
+					<to>CHL_Intervention_Effectiveness</to>
+				</connector>
+				<aux x="427.5" y="1097.5" name="CHL Intervention\nEfficacy"/>
+				<connector uid="60" angle="183.434">
+					<from>CHL_Intervention_Efficacy</from>
+					<to>CHL_Intervention_Effectiveness</to>
+				</connector>
+				<connector uid="62" angle="339.775">
+					<from>
+						<alias uid="61"/>
+					</from>
+					<to>Hazard_Rate</to>
 				</connector>
 				<alias font_style="italic" uid="10" x="856.786" y="115.429" width="45" height="35">
 					<of>Children_Under_or_Normal_Weight</of>
@@ -575,26 +636,20 @@ STEP(CHL_Intervention_ES, CHL_Intervention_T2)</eqn>
 				<alias font_style="italic" uid="20" x="1140.57" y="481" width="18" height="18">
 					<of>Initial_Prevalence_of_Overweight_or_Obesity</of>
 				</alias>
-				<alias font_style="italic" label_side="top" uid="31" x="326" y="114" width="18" height="18">
-					<of>CHL_Intervention</of>
+				<alias color="blue" background="white" font_style="italic" label_side="top" uid="61" x="279.125" y="139.75" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>CHL_Intervention_Effectiveness</of>
 				</alias>
-				<alias font_style="italic" label_side="top" uid="32" x="287" y="153.286" width="18" height="18">
-					<of>CHL_Maintenance</of>
-				</alias>
-				<alias font_style="italic" uid="35" x="1247" y="421.857" width="18" height="18">
-					<of>CHL_Intervention_ES</of>
-				</alias>
-				<alias font_style="italic" uid="36" x="1247" y="481" width="18" height="18">
-					<of>CHL_Maintenance_ES</of>
-				</alias>
-				<alias font_style="italic" uid="37" x="1353.14" y="421.857" width="18" height="18">
-					<of>CHL_Intervention_Duration</of>
-				</alias>
-				<alias font_style="italic" uid="38" x="1353.14" y="481" width="18" height="18">
-					<of>CHL_Maintenance_Duration</of>
+				<alias color="blue" background="white" font_style="italic" uid="63" x="1240.38" y="426" width="18" height="18">
+					<shape type="circle" radius="18"/>
+					<of>CHL_Intervention_Efficacy</of>
 				</alias>
 			</view>
 		</views>
 	</model>
+	<isee:controls>
+		<isee:control priority="interactive" name="CHL_Intervention_Efficacy" value="-0.697538646195252"/>
+		<isee:control priority="interactive" name="Initial_Potential_Users" value="3666.54158392369"/>
+	</isee:controls>
 </xmile>
 
